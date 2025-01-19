@@ -18,6 +18,18 @@ type RequestsResult = {
 
 async function fetchAll(urls: string[]): Promise<RequestsResult[]> {
     //Your code goes here
+    const results: RequestsResult[] = [];
+    const promises = urls.map(url => {
+        return fetch(url)
+            .then(async response => {
+                const data = await response.json();
+                results.push({ data, status: response.status });
+            })
+            .catch(error => {
+                results.push({ data: { error: error.message }, status: 500 });
+            });
+    });
+    await Promise.all(promises);
     return [];
 }
 
